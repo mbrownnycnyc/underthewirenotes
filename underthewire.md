@@ -77,3 +77,197 @@ the name of the file within a directory on the desktop that has spaces in its na
 $century5password = ((dir C:\users\century4\desktop | ? {$_.name -like "* *"}).FullName | % {dir $_}).name
 #password is `5548`
 ```
+
+## level 5
+* clue:
+```
+the short name of the domain in which this system resides in PLUS the name of the file on the desktop.
+```
+
+1. answer:
+
+```
+$century6password = $($env:userdomain)+((dir c:\users\century5\desktop\).name)
+#password is `underthewire3347`
+```
+
+## level 6:
+* clue:
+
+```
+the number of folders on the desktop
+```
+
+1. answer:
+
+```
+$century7password = (dir c:\users\century6\desktop).count
+#password is '197'
+```
+
+## level 7:
+* clue:
+
+```
+is in a readme file somewhere within the contacts, desktop, documents, downloads, favorites, music, or videos folder in the user’s profile
+```
+
+1. answer:
+
+```
+$targetrootdir = "C:\users\century7"
+$alldirs = dir -recurse $targetrootdir -directory
+
+
+$subdirs = "contacts, desktop, documents, downloads, favorites, music, videos"
+$subdirs = $subdirs -split ", "
+
+$targetdirs = $alldirs | % { if ( $subdirs -contains $_.name) {$_}}
+
+
+$readmefiles = @()
+foreach ($dir in $targetdirs) {
+    $readmefiles += dir $dir.fullname -file -recurse | ? {$_.name -like "*readme*"}
+}
+
+$century8password = $readmefiles | get-content
+#password is `7points`
+```
+
+## level 8:
+* clue: 
+
+```
+the number of unique entries within the file on the desktop.
+```
+
+1. answer:
+
+```
+$targetdir = "C:\users\century8\desktop"
+
+$century9password = (dir $targetdir -file | get-content | sort -unique).count
+#password is `696`
+```
+
+## level 9:
+* clue
+```
+the 161st word within the file on the desktop
+```
+
+1. answer:
+
+```
+$targetdir = "C:\users\century8\desktop"
+
+$century10password = ((dir $targetdir -file | get-content) -split " " )[160]
+
+#password is `pierid`
+```
+
+## level 10
+* clue:
+
+```
+the 10th and 8th word of the Windows Update service description combined PLUS the name of the file on the desktop
+```
+
+1. answer
+
+```
+$svcdesc = (Get-CimInstance win32_service -Filter "caption like 'Windows Update'").description -split " "
+
+$filename = (dir "C:\users\century10\desktop" -file).name
+
+$century11password = ($svcdesc[9] + $svcdesc[7] + $filename).tolower()
+#password is `windowsupdates110`
+```
+
+## level 11
+* clue
+
+```
+the name of the hidden file within the contacts, desktop, documents, downloads, favorites, music, or videos folder in the user’s profile
+```
+
+1. answer
+
+```
+$targetrootdir = "C:\users\century11"
+$alldirs = dir -recurse $targetrootdir -directory
+
+
+$subdirs = "contacts, desktop, documents, downloads, favorites, music, videos"
+$subdirs = $subdirs -split ", "
+
+$targetdirs = $alldirs | % { if ( $subdirs -contains $_.name) {$_}}
+
+
+$hiddenfiles = @()
+foreach ($dir in $targetdirs) {
+    $hiddenfiles += dir $dir.fullname -file -recurse -hidden
+}
+
+$century12password = $hiddenfiles.name
+#password is `secret_sauce`
+
+```
+
+## level 12
+
+* clue
+
+```
+the description of the computer designated as a Domain Controller within this domain PLUS the name of the file on the desktop.
+```
+
+1. answer:
+
+```
+$dcdesc = (get-adcomputer ((get-addomaincontroller).computerobjectdn) -properties description).description
+
+$filename = (dir c:\users\century12\desktop -file).name
+
+$century13password = $($dcdesc + $filename).tolower()
+$password is `i_authenticate_things`
+```
+
+## level 13
+
+* clue
+
+```
+the number of words within the file on the desktop
+```
+
+1. answer
+
+```
+$century14password = (((dir C:\users\century13\Desktop -file) | get-content) -split " ").count
+#password is `755`
+```
+
+## level 14
+
+* clue
+
+```
+the number of times the word “polo” appears within the file on the desktop
+```
+
+1. answer:
+
+```
+$century15password = (((dir C:\users\century14\Desktop -file) | get-content) -split " polo ").count
+
+#password is `153`
+```
+
+## level 15
+
+* clue
+
+```
+Winning.
+```
