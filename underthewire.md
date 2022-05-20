@@ -4,6 +4,14 @@
 * the username is the level of the box.
   * Century is the first box, so the username for the first level of Century is `century1`.  The password is the flag.
   * the password is always lower case regardless of how they appear when discovered.
+* war games:
+  ```
+  Century
+  Cyborg
+  Groot
+  Oracle
+  Trebek
+  ```
 
 # century
 
@@ -270,4 +278,62 @@ $century15password = (((dir C:\users\century14\Desktop -file) | get-content) -sp
 
 ```
 Winning.
+```
+
+
+# cyborg
+
+## level 0
+
+```
+ssh cyborg1@cyborg.underthewire.tech
+#password: cyborg1
+```
+
+## level 1
+
+* clue
+
+```
+the state that the user Chris Rogers is from as stated within Active Directory.
+```
+
+1. answer:
+
+```
+$cyborg2password = (get-aduser -filter * -properties state | ? {$_.name -like "*Rogers*"} | ? {$_.name -like "*chris*"}).state
+#password is `kansas`
+```
+
+## level 2
+
+* clue
+
+```
+the host A record IP address for CYBORG718W100N PLUS the name of the file on the desktop.
+```
+
+1. answer:
+
+```
+$ipaddr = (Resolve-DnsName CYBORG718W100N | ? {$_.querytype -eq "a"}).ipaddress
+cd C:\users\cyborg2\desktop
+$desktopfile = dir $cd -file
+$cyborg3password = $ipaddr + $desktopfile
+#password is `172.31.45.167_ipv4`
+```
+
+## level 3
+
+* clue
+
+```
+the number of users in the Cyborg group within Active Directory PLUS the name of the file on the desktop.
+```
+
+1. answer:
+
+```
+$cyborg4password = "$([string](Get-ADGroupMember -Identity Cyborg).count)$((dir $cd -file).name)"
+#password is `88_objects`
 ```
